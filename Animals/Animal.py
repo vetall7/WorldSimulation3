@@ -1,11 +1,13 @@
 import random
 
-from Animals.Wolf import Wolf
-from Animals.Fox import Fox
-from Animals.Turtle import Turtle
-from Animals.Antelope import Antelope
-from Animals.Sheep import Sheep
+from Wolf import Wolf
+from Fox import Fox
+from Turtle import Turtle
+from Antelope import Antelope
+from Sheep import Sheep
 from Main.Organism import Organism
+from Plants.Plant import Plant
+
 
 class Animal(Organism):
     def __init__(self, x, y, world, sign, name, power, initiative):
@@ -86,7 +88,14 @@ class Animal(Organism):
         elif (self.power > victim.power):
             self.x = x
             self.y = y
-            self.world.SetPoint()
+            self.world.SetPoint(self._x_priv, self._y_priv, None)
+            self.world.SetPoint(x, y, self)
+            if (isinstance(victim, Plant)) :
+                victim.Collision(self, x, y)
+            self.world.DeleteOrg(victim)
+        elif(self.power <= victim.power):
+            self.world.SetPoint(self.x_priv, self._y_priv, None)
+            self.world.DeleteOrg(self)
 
 
 
