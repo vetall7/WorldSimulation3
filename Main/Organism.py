@@ -109,3 +109,8 @@ class Organism(ABC):
     @abstractmethod
     def collision(self, victim, x, y):
         pass
+
+    def  DidDeflectedAttack(self, attacker):
+        return False
+    def TarczeAlzura(self, attacker):
+        return False

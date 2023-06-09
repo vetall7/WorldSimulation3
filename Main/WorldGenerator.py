@@ -1,4 +1,5 @@
 import random
+import pickle
 from Animals.Human import Human
 from Animals.Wolf import Wolf
 from Animals.Fox import Fox
@@ -36,6 +37,7 @@ class WorldGenerator():
         human = Human(x[0], y[0], self.__world)
         self.__world.AddOrganism(human)
         self.__world.human = human
+        print(human._age)
         for i in range (0, int(counter/20)):
             self.__CoordinateGenerate(x, y, ocupied)
             wolf = Wolf(x[0], y[0], self.__world)
@@ -76,3 +78,11 @@ class WorldGenerator():
             self.__CoordinateGenerate(x, y, ocupied)
             sosmowskihogweed = SosmowskiHogweed(x[0], y[0], self.__world)
             self.__world.AddOrganism(sosmowskihogweed)
+
+    def SaveGame(self):
+        with open('savegame.dat', 'wb') as f:
+            pickle.dump(self.__world, f)
+    def ReadGame(self):
+        with open('savegame.dat', 'rb') as f:
+            __world = pickle.load(f)
+        return __world

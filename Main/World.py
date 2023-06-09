@@ -1,14 +1,11 @@
 from abc import ABC, abstractmethod
-import tkinter as tk
-import pygame
-
+from abc import ABC, abstractmethod
 from Main.Organism import Organism
 from Animals.Animal import Animal
+from Main.directions import Direction
 from Plants.Plant import Plant
 
-# Rest of the code...
-
-class World():
+class World(ABC):
     def __init__(self, height, width):
         self._height = height
         self._width = width
@@ -17,8 +14,11 @@ class World():
         self._comments = []
         self._board = [[None] * width for _ in range(height)]
         self._human = None
-        self._CellNeighboursCounter = None
+        self._CellNeighboursCounter = 4
         self._cellSize = 50
+
+    def AddComment(self, comment):
+        self._comments.append(comment)
 
     @property
     def turn(self):
@@ -62,87 +62,82 @@ class World():
     @property
     def organisms(self):
         return self._organisms
-    def __SetPoint(self, x, y, organism):
-        self._board[organism.y][organism.x] = organism
+    def SetPoint(self, x, y, organism):
+        self._board[y][x] = organism
     def AddOrganism(self, organism):
         self._organisms.append(organism)
-        self.__SetPoint(organism.x, organism.y, organism)
-    def DrawWorld(self):
-            # Размеры клетки
-            CELL_SIZE = 50
+        self.SetPoint(organism.x, organism.y, organism)
+    def DeleteOrg(self,target_organism):
+        self._organisms = [organism for organism in self._organisms if organism is not target_organism]
 
-            # Размеры доски
-            BOARD_SIZE = (self._width, self._height)
+    @abstractmethod
+    def DrawWorld(self, generate):
+        pass
 
-            # Цвета клеток
-            WHITE_COLOR = (255, 255, 255)
-            BLACK_COLOR = (0, 0, 0)
-            RED_COLOR = (255, 0, 0)
-            GREEN_COLOR = (0, 255, 0)
-            BLUE_COLOR = (0, 0, 255)
-            YELLOW_COLOR = (255, 255, 0)
 
-            # Инициализация Pygame
-            pygame.init()
-
-            # Создание окна
-            window_size = (BOARD_SIZE[0] * CELL_SIZE, BOARD_SIZE[1] * CELL_SIZE)
-            screen = pygame.display.set_mode(window_size)
-            pygame.display.set_caption("Шахматная доска")
-
-            # Очистка экрана
-            screen.fill(WHITE_COLOR)
-
-            # Отрисовка клеток доски
-            for row in range(BOARD_SIZE[1]):
-                for col in range(BOARD_SIZE[0]):
-                    x = col * CELL_SIZE
-                    y = row * CELL_SIZE
-                    # Определение цвета клетки
-                    if isinstance(self._board[row][col], Animal):
-                        color = RED_COLOR
-                    elif isinstance(self._board[row][col], Plant):
-                        color = BLUE_COLOR
-                    else:
-                        color = WHITE_COLOR
-
-                    # Отрисовка клетки
-                    pygame.draw.rect(screen, color, (x, y, CELL_SIZE, CELL_SIZE))
-                    if self._board[row][col] != None:
-                        symbol_font = pygame.font.SysFont(None, 30)
-                        symbol_text = symbol_font.render(self._board[row][col].sign, True,
-                                                         BLACK_COLOR)  # Замените "Символ" на нужный символ
-                        symbol_rect = symbol_text.get_rect(center=(x + CELL_SIZE // 2, y + CELL_SIZE // 2))
-                        screen.blit(symbol_text, symbol_rect)
-
-            # Обновление экрана
-            pygame.display.flip()
-
-            # Ожидание нажатия клавиши
-            while True:
-                for event in pygame.event.get():
-                    if event.type == pygame.QUIT:
-                        pygame.quit()
-                        return
-                    elif event.type == pygame.KEYDOWN:
-                        return
-
-                pygame.time.Clock().tick(30)
     def GetPoint(self, x, y):
         return self._board[y][x]
 
+    @abstractmethod
     def FindPoints(self, org, x, y):
-        x_coo = org.x
-        y_coo = org.y
-        if (y_coo-1 >= 0 and self.GetPoint(x_coo, y_coo-1) == None):
-            x.append(x_coo)
-            y.append(y_coo-1)
-        if (x_coo + 1 < self.width and self.GetPoint(x_coo+1, y_coo) == None):
-            x.append(x_coo + 1)
-            y.append(y_coo)
-        if (y_coo + 1 < self.height and self.GetPoint(x_coo, y_coo + 1) == None):
-            x.append(x_coo)
-            y.append(y_coo + 1)
-        if (x_coo-1 >= 0 and self.GetPoint(x_coo-1, y_coo) == None):
-            x.append(x_coo-1)
-            y.append(y_coo)
+        pass
+
+
+    def Turn(self):
+        self._comments.clear()
+        self.turn += 1
+        for i in self._organisms:
+            if i.age == 0:
+                i.age = 1
+
+        sorted_organisms = sorted(self.organisms, key=lambda o: (-o.initiative, o.age))
+
+        for i in sorted_organisms:
+            if i.age != 0:
+                i.action(1)
+    @abstractmethod
+    def FindNeighbours(self, org, x, y):
+        pass
+    def _NewOrganism(self, name, x, y):
+        from Animals.Fox import Fox
+        from Animals.Antelope import Antelope
+        from Animals.Sheep import Sheep
+        from Animals.Turtle import Turtle
+        from Animals.Wolf import Wolf
+        from Plants.Belladonna import Belladonna
+        from Plants.Dandelion import Dandelion
+        from Plants.Grass import Grass
+        from Plants.Guarana import Guarana
+        from Plants.SosmowskiHogweed import SosmowskiHogweed
+
+
+        if name == "Fox":
+            f = Fox(x, y, self)
+            return f
+        if name == "Antelope":
+            a = Antelope(x, y, self)
+            return a
+        if name == "Sheep":
+            s = Sheep(x, y, self)
+            return s
+        if name == "Turtle":
+            t = Turtle(x, y, self)
+            return t
+        if name == "Wolf":
+            w = Wolf(x, y, self)
+            return w
+        if name == "Belladonna":
+            b = Belladonna(x, y, self)
+            return b
+        if name == "Dandelion":
+            d = Dandelion(x, y, self)
+            return d
+        if name == "Grass":
+            g = Grass(x, y, self)
+            return g
+        if name == "Guarana":
+            g = Guarana(x, y, self)
+            return g
+        if name == "SosmowskiHogweed":
+            s = SosmowskiHogweed(x, y, self)
+            return s

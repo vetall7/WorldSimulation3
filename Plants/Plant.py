@@ -1,15 +1,9 @@
 from Main.Organism import Organism
 import random
 
-from Plants.Belladonna import Belladonna
-from Plants.Dandelion import Dandelion
-from Plants.Grass import Grass
-from Plants.Guarana import Guarana
-from Plants.SosmowskiHogweed import SosmowskiHogweed
-
-
 class Plant(Organism):
     def __init__(self, x, y, world, sign, name, power, initiative):
+        super().__init__()
         self._x = x
         self._y = y
         self._world = world
@@ -18,20 +12,26 @@ class Plant(Organism):
         self.power = power
         self.initiative = initiative
 
-    def Action(self, range):
-        rand_num = random.randint(20)
+    def action(self, range):
+        rand_num = random.randint(0,20)
         if (rand_num == 0):
             new_plant = self.__NewPLant()
             if (new_plant != None):
                 self.world.AddOrganism(new_plant)
+                self.world.AddComment( new_plant.name + "was born")
 
     def __NewPLant(self):
+        from Plants.Belladonna import Belladonna
+        from Plants.Dandelion import Dandelion
+        from Plants.Grass import Grass
+        from Plants.Guarana import Guarana
+        from Plants.SosmowskiHogweed import SosmowskiHogweed
         x = []
         y = []
         self.world.FindPoints(self, x, y)
         if len(x) == 0:
             return None
-        point = random.randint(len(x))
+        point = random.randint(0, len(x)-1)
         x_temp = x[point]
         y_temp = y[point]
         if (isinstance(self, Grass)):
@@ -51,7 +51,5 @@ class Plant(Organism):
             return s
         return None
 
-    def Collision(self, victim, x, y):
+    def collision(self, victim, x, y):
         pass
-
-
