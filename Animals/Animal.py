@@ -1,16 +1,12 @@
 import random
 
-from Wolf import Wolf
-from Fox import Fox
-from Turtle import Turtle
-from Antelope import Antelope
-from Sheep import Sheep
 from Main.Organism import Organism
 from Plants.Plant import Plant
 
 
 class Animal(Organism):
     def __init__(self, x, y, world, sign, name, power, initiative):
+        super().__init__()
         self._x = x
         self._y = y
         self._world = world
@@ -22,14 +18,14 @@ class Animal(Organism):
         return False
 
     def action(self, range):
-        self._age += 1
-        self._x_priv = self.x
-        self._y_priv = self.y
-        random_number = random.randint(self.world.CellNeighboursCounter)
+        self.age += 1
+        self.x_priv = self.x
+        self.y_priv = self.y
+        random_number = random.randint(0, self.world.CellNeighboursCounter-1)
         x = self.x
         y = self.y
         while True:
-            if random_number == 0 :
+            if random_number == 0:
                 if x + range >= self.world.width:
                     random_number = 1
                 else:
@@ -54,7 +50,7 @@ class Animal(Organism):
                     y += range
                     break
             elif random_number == 4:
-                if (y - range < 0 or x + range >= self.width):
+                if (y - range < 0 or x + range >= self.world.width):
                     random_number = 5
                 else:
                     x += range
@@ -69,44 +65,55 @@ class Animal(Organism):
                     break
 
         if (self.world.GetPoint(x, y) != None):
+            if self.world.GetPoint(x, y).TarczeAlzura(self):
+                return
             if self.IsRunAway():
                 return
-            self.Collision(self.world.GetPoint(x, y), x, y)
+            self.collision(self.world.GetPoint(x, y), x, y)
         else:
             self.x = x
             self.y = y
-            self.world.SetPoint(self._x_priv, self._y_priv, None)
+            self.world.SetPoint(self.x_priv, self.y_priv, None)
             self.world.SetPoint(x, y, self)
+            #self.world.AddComment(self.name + " moved from [" + str(self.x_priv) + ";" + str(self.y_priv) + "]" + " to [" + str(x) + ";" + str(y) + "]")
 
-    def Collision(self, victim, x, y):
+    def collision(self, victim, x, y):
         if (victim.age == 0):
             return
         if (victim.sign == self._sign):
             temp = self.__NewOrganism(victim)
             if temp != None:
                 self.world.AddOrganism(temp)
+                self.world.AddComment(temp.name + "was born")
         elif (self.power > victim.power):
+            if (victim.DidDeflectedAttack(self)):
+                return
             self.x = x
             self.y = y
-            self.world.SetPoint(self._x_priv, self._y_priv, None)
+            self.world.SetPoint(self.x_priv, self.y_priv, None)
             self.world.SetPoint(x, y, self)
+            self.world.AddComment(self.name + " killed " + victim.name)
             if (isinstance(victim, Plant)) :
-                victim.Collision(self, x, y)
+                victim.collision(self, x, y)
             self.world.DeleteOrg(victim)
         elif(self.power <= victim.power):
-            self.world.SetPoint(self.x_priv, self._y_priv, None)
+            self.world.AddComment(victim.name + " killed " + self.name)
+            self.world.SetPoint(self.x_priv, self.y_priv, None)
             self.world.DeleteOrg(self)
 
-
-
     def __NewOrganism(self, victim):
+        from Animals.Wolf import Wolf
+        from Animals.Fox import Fox
+        from Animals.Turtle import Turtle
+        from Animals.Antelope import Antelope
+        from Animals.Sheep import Sheep
         x = []
         y = []
         self.world.FindPoints(self, x, y)
         self.world.FindPoints(victim, x, y)
         if (len(x) == 0):
             return None
-        point = random.randint(len(x))
+        point = random.randint(0, len(x)-1)
         x_temp = x[point]
         y_temp = y[point]
 
