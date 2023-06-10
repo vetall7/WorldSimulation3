@@ -1,5 +1,4 @@
 import random
-
 from Main.Organism import Organism
 from Plants.Plant import Plant
 
@@ -93,9 +92,10 @@ class Animal(Organism):
             self.world.SetPoint(self.x_priv, self.y_priv, None)
             self.world.SetPoint(x, y, self)
             self.world.AddComment(self.name + " killed " + victim.name)
-            if (isinstance(victim, Plant)) :
+            if (isinstance(victim, Plant)):
                 victim.collision(self, x, y)
             self.world.DeleteOrg(victim)
+            victim.age = 0
         elif(self.power <= victim.power):
             self.world.AddComment(victim.name + " killed " + self.name)
             self.world.SetPoint(self.x_priv, self.y_priv, None)
@@ -107,6 +107,7 @@ class Animal(Organism):
         from Animals.Turtle import Turtle
         from Animals.Antelope import Antelope
         from Animals.Sheep import Sheep
+        from Animals.cybersheep import cybersheep
         x = []
         y = []
         self.world.FindPoints(self, x, y)
@@ -132,4 +133,10 @@ class Animal(Organism):
         if (isinstance(self, Antelope)):
             a = Antelope(x_temp, y_temp, self.world)
             return a
+        if (isinstance(self, cybersheep)):
+            a = cybersheep(x_temp, y_temp, self.world)
+            return a
         return None
+
+    def isKilledByHogweed(self):
+        return True

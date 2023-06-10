@@ -13,10 +13,10 @@ class HexWorld(World):
     def DrawWorld(self, generate):
         CELL_SIZE = 50
 
-        # Размеры доски
+
         BOARD_SIZE = (self._width, self._height)
 
-        # Цвета клеток
+
         WHITE_COLOR = (255, 255, 255)
         BLACK_COLOR = (0, 0, 0)
         RED_COLOR = (255, 0, 0)
@@ -24,20 +24,19 @@ class HexWorld(World):
         BLUE_COLOR = (0, 0, 255)
         YELLOW_COLOR = (255, 255, 0)
 
-        # Инициализация Pygame
+
         pygame.init()
 
-        # Создание окна
         window_width = BOARD_SIZE[0] * CELL_SIZE + self.width * CELL_SIZE / 2
         window_height = BOARD_SIZE[1] * CELL_SIZE + 100  # Increased height for the text area
         screen = pygame.display.set_mode((window_width, window_height))
         pygame.display.set_caption("Шахматная доска")
 
-        # Создание поверхности для доски и текста
+
         board_surface = pygame.Surface((window_width, window_height - 100))
         text_surface = pygame.Surface((window_width, 100))
 
-        # Очистка экрана
+
         board_surface.fill(WHITE_COLOR)
         text_surface.fill(WHITE_COLOR)
         move = 0
@@ -47,7 +46,7 @@ class HexWorld(World):
                 x = col * CELL_SIZE + move
                 y = row * CELL_SIZE - move_y
 
-                # Определение цвета шестиугольника
+
                 if isinstance(self._board[row][col], Animal):
                     color = RED_COLOR
                 elif isinstance(self._board[row][col], Plant):
@@ -55,7 +54,7 @@ class HexWorld(World):
                 else:
                     color = WHITE_COLOR
 
-                # Расчет вершин шестиугольника
+
                 points = [
                     (x + CELL_SIZE // 2, y),
                     (x + CELL_SIZE, y + CELL_SIZE // 4),
@@ -65,7 +64,7 @@ class HexWorld(World):
                     (x, y + CELL_SIZE // 4)
                 ]
 
-                # Отрисовка шестиугольника
+
                 pygame.draw.polygon(board_surface, color, points)
                 pygame.draw.polygon(board_surface, BLACK_COLOR, points, 1)
                 if self._board[row][col] is not None:
@@ -75,23 +74,23 @@ class HexWorld(World):
                     board_surface.blit(symbol_text, symbol_rect)
             move += CELL_SIZE / 2
             move_y += CELL_SIZE / 4
-        # Отображение текста
+
         font_size = 20
         font = pygame.font.SysFont(None, font_size)
         for index, comment in enumerate(self._comments):
             text_surface.blit(font.render(comment, True, BLACK_COLOR), (10, font_size * index))
 
         text_surface.blit(font.render("Turn number " + str(self._turn), True, BLACK_COLOR), (300, font_size))
-        # Обновление экрана
+
         screen.blit(board_surface, (0, 0))
         screen.blit(text_surface, (0, window_height - 100))
         pygame.display.flip()
-        # Ожидание нажатия клавиши
+
         while True:
             for event in pygame.event.get():
                 if event.type == pygame.QUIT:
                     pygame.quit()
-                    return
+                    exit()
                 elif event.type == pygame.KEYDOWN:
                     if hasattr(event, 'key'):
                         if event.key == K_w:
@@ -108,7 +107,7 @@ class HexWorld(World):
                             self._human.direction = Direction.TURN_DOWN_LEFT
                         elif event.key == K_RETURN:
                             self._human.direction = Direction.TURN_SUPER
-                        elif event.key == K_s:
+                        elif event.key == K_x:
                             generate.SaveGame()
                             continue
                         else:
@@ -116,9 +115,8 @@ class HexWorld(World):
                         self.Turn()
                         self.DrawWorld(generate)
                 elif event.type == pygame.MOUSEBUTTONDOWN:
-                    if event.button == 1:  # Левая кнопка мыши
-                        mouse_pos = pygame.mouse.get_pos()  # Получить координаты мыши
-                        # Проверить, попали ли координаты мыши в клетку доски
+                    if event.button == 1:
+                        mouse_pos = pygame.mouse.get_pos()
 
                         clicked_row = (mouse_pos[1] // (CELL_SIZE - CELL_SIZE//4))
                         clicked_col = (mouse_pos[0] - (clicked_row * (CELL_SIZE//2))) // CELL_SIZE
@@ -134,11 +132,9 @@ class HexWorld(World):
                                 self.AddOrganism(org)
                                 self.DrawWorld(generate)
 
-                        # Создание главного окна
                         window = tk.Tk()
                         window.title("Выпадающий список")
 
-                        # Создание выпадающего списка
                         dropdown = ttk.Combobox(window,
                                                 values=["Antelope", "Fox", "Wolf", "Turtle", "Sheep", "Belladonna",
                                                         "Dandelion", "Grass", "Guarana", "SosmowskiHogweed"])
@@ -147,7 +143,6 @@ class HexWorld(World):
                         dropdown.pack()
                         window.eval('tk::PlaceWindow . center')
 
-                        # Запуск главного цикла событий
                         window.mainloop()
             pygame.time.Clock().tick(30)
 

@@ -6,6 +6,7 @@ from Animals.Fox import Fox
 from Animals.Sheep import Sheep
 from Animals.Turtle import Turtle
 from Animals.Antelope import Antelope
+from Animals.cybersheep import cybersheep
 
 from Plants.Belladonna import Belladonna
 from Plants.Dandelion import Dandelion
@@ -78,6 +79,11 @@ class WorldGenerator():
             self.__CoordinateGenerate(x, y, ocupied)
             sosmowskihogweed = SosmowskiHogweed(x[0], y[0], self.__world)
             self.__world.AddOrganism(sosmowskihogweed)
+
+            self.__CoordinateGenerate(x, y, ocupied)
+            c = cybersheep(x[0], y[0], self.__world)
+            self.__world.AddOrganism(c)
+
 
     def SaveGame(self):
         with open('savegame.dat', 'wb') as f:

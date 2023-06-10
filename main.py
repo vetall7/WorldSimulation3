@@ -4,17 +4,54 @@ from Main.HexWorld import HexWorld
 from Main.WorldGenerator import WorldGenerator
 from tkinter import messagebox
 
-def new_world():
-    window.destroy()
-    def create_world():
-        width = int(width_entry.get())
-        height = int(height_entry.get())
-        root.destroy()
+def choose_world(width, height):
+    def create_hex_world():
+        window2.destroy()
         world = HexWorld(height, width)
         generate = WorldGenerator(world)
         generate.Generate()
         world.DrawWorld(generate)
-        root.destroy()
+
+    def create_simple_world():
+        window2.destroy()
+        world = SimpleWorld(height, width)
+        generate = WorldGenerator(world)
+        generate.Generate()
+        world.DrawWorld(generate)
+
+    window2 = tk.Tk()
+    window2.title("Диалоговое окно")
+    window2.geometry("300x250")
+    window2.configure(bg="darkblue")
+
+    label = tk.Label(window2, text="CHOOSE THE WORLD", font=("Helvetica", 14, "bold"), fg="white", bg="darkblue")
+    label.pack(pady=10)
+
+
+    button_frame = tk.Frame(window2, bg="darkblue")
+    button_frame.pack(pady=10)
+
+
+    button1 = tk.Button(button_frame, text="SIMPLE WORLD", command=create_simple_world, bg="blue", fg="white",
+                        font=("Arial", 12, "bold"), padx=20, pady=10)
+    button2 = tk.Button(button_frame, text="HEX WORLD", command=create_hex_world, bg="green", fg="white",
+                        font=("Arial", 12, "bold"), padx=20, pady=10)
+
+
+    button1.config(relief=tk.SOLID, bd=0)
+    button1.pack(pady=10)
+    button2.config(relief=tk.SOLID, bd=0)
+    button2.pack(pady=10)
+
+
+    window2.eval('tk::PlaceWindow . center')
+
+
+    window2.mainloop()
+
+
+def new_world():
+    window.destroy()
 
     root = tk.Tk()
     root.title("Диалоговое окно")
@@ -36,7 +73,7 @@ def new_world():
     height_entry = tk.Entry(frame, font=("Arial", 16))
     height_entry.pack()
 
-    button = tk.Button(frame, text="Generate World", font=("Arial", 12), bg = "yellow", command=create_world)
+    button = tk.Button(frame, text="Generate World", font=("Arial", 12), bg="yellow", command=lambda: choose_world(int(width_entry.get()), int(height_entry.get())))
     button.pack(pady=30)
 
     root.eval('tk::PlaceWindow . center')
@@ -50,32 +87,30 @@ def saved_world():
     world = generate.ReadGame()
     world.DrawWorld(generate)
 
-# Создание главного окна
+
 window = tk.Tk()
 window.title("Диалоговое окно")
-window.geometry("300x250")  # Размер окна
-window.configure(bg="darkblue")  # Цвет фона окна
+window.geometry("300x250")
+window.configure(bg="darkblue")
 
-# Создание надписи с жирным шрифтом, измененным цветом текста и фона
+
 label = tk.Label(window, text="WORLD GAME SIMULATION", font=("Helvetica", 14, "bold"), fg="white", bg="darkblue")
-label.pack(pady=10)  # Размещение надписи с отступом
+label.pack(pady=10)
 
-# Создание контейнера для кнопок
+
 button_frame = tk.Frame(window, bg="darkblue")
-button_frame.pack(pady=10)  # Отступ между контейнером и надписью
+button_frame.pack(pady=10)
 
-# Создание кнопок с овальной формой, увеличенными размерами и отступом
+
 button1 = tk.Button(button_frame, text="NEW GAME", command=new_world, bg="blue", fg="white", font=("Arial", 12, "bold"), padx=20, pady=10)
 button2 = tk.Button(button_frame, text="LOAD GAME", command=saved_world, bg="green", fg="white", font=("Arial", 12, "bold"), padx=20, pady=10)
 
-# Применение овальной формы кнопок
-button1.config(relief=tk.SOLID, bd=0)  # Убираем границу кнопки
-button1.pack(pady=10)  # Отступ между кнопками
+button1.config(relief=tk.SOLID, bd=0)
+button1.pack(pady=10)
 button2.config(relief=tk.SOLID, bd=0)
 button2.pack(pady=10)
 
-# Центрирование окна на экране
+
 window.eval('tk::PlaceWindow . center')
 
-# Запуск главного цикла обработки событий
 window.mainloop()

@@ -114,3 +114,5 @@ class Organism(ABC):
         return False
     def TarczeAlzura(self, attacker):
         return False
+    def isStalked(self):
+        return False

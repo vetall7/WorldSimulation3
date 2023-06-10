@@ -15,9 +15,12 @@ class SosmowskiHogweed(Plant):
             if (
                     self.world.GetPoint(x_coo[i], y_coo[i]) is not None
                     and isinstance(self.world.GetPoint(x_coo[i], y_coo[i]), Animal)
+                    and self.world.GetPoint(x_coo[i], y_coo[i]).isKilledByHogweed()
             ):
                 self.world.AddComment(
                     "SosmowskiHogweed killed " + self.world.GetPoint(x_coo[i], y_coo[i]).name
                 )
                 self.world.DeleteOrg(self.world.GetPoint(x_coo[i], y_coo[i]))
                 self.world.SetPoint(x_coo[i], y_coo[i], None)
+    def isStalked(self):
+        return True

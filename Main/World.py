@@ -68,7 +68,10 @@ class World(ABC):
         self._organisms.append(organism)
         self.SetPoint(organism.x, organism.y, organism)
     def DeleteOrg(self,target_organism):
-        self._organisms = [organism for organism in self._organisms if organism is not target_organism]
+            for struct in self._organisms:
+                if struct is target_organism:
+                    self._organisms.remove(struct)
+                    break
 
     @abstractmethod
     def DrawWorld(self, generate):
