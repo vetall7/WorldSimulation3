@@ -28,7 +28,7 @@ class HexWorld(World):
         pygame.init()
 
         # Создание окна
-        window_width = BOARD_SIZE[0] * CELL_SIZE + self.width*CELL_SIZE/2
+        window_width = BOARD_SIZE[0] * CELL_SIZE + self.width * CELL_SIZE / 2
         window_height = BOARD_SIZE[1] * CELL_SIZE + 100  # Increased height for the text area
         screen = pygame.display.set_mode((window_width, window_height))
         pygame.display.set_caption("Шахматная доска")
@@ -73,8 +73,8 @@ class HexWorld(World):
                     symbol_text = symbol_font.render(self._board[row][col].sign, True, BLACK_COLOR)
                     symbol_rect = symbol_text.get_rect(center=(x + CELL_SIZE // 2, y + CELL_SIZE // 2))
                     board_surface.blit(symbol_text, symbol_rect)
-            move += CELL_SIZE/2
-            move_y += CELL_SIZE/4
+            move += CELL_SIZE / 2
+            move_y += CELL_SIZE / 4
         # Отображение текста
         font_size = 20
         font = pygame.font.SysFont(None, font_size)
@@ -94,14 +94,18 @@ class HexWorld(World):
                     return
                 elif event.type == pygame.KEYDOWN:
                     if hasattr(event, 'key'):
-                        if event.key == K_UP:
+                        if event.key == K_w:
                             self._human.direction = Direction.TURN_UP
-                        elif event.key == K_DOWN:
+                        elif event.key == K_s:
                             self._human.direction = Direction.TURN_DOWN
-                        elif event.key == K_RIGHT:
+                        elif event.key == K_d:
                             self._human.direction = Direction.TURN_RIGHT
-                        elif event.key == K_LEFT:
+                        elif event.key == K_a:
                             self._human.direction = Direction.TURN_LEFT
+                        elif event.key == K_q:
+                            self._human.direction = Direction.TURN_UP_RIGHT
+                        elif event.key == K_e:
+                            self._human.direction = Direction.TURN_DOWN_LEFT
                         elif event.key == K_RETURN:
                             self._human.direction = Direction.TURN_SUPER
                         elif event.key == K_s:
@@ -115,8 +119,12 @@ class HexWorld(World):
                     if event.button == 1:  # Левая кнопка мыши
                         mouse_pos = pygame.mouse.get_pos()  # Получить координаты мыши
                         # Проверить, попали ли координаты мыши в клетку доски
-                        clicked_row = mouse_pos[1] // CELL_SIZE
-                        clicked_col = mouse_pos[0] // CELL_SIZE
+
+                        clicked_row = (mouse_pos[1] // (CELL_SIZE - CELL_SIZE//4))
+                        clicked_col = (mouse_pos[0] - (clicked_row * (CELL_SIZE//2))) // CELL_SIZE
+
+                        if (clicked_col < 0 or clicked_col >= self.width or clicked_row < 0 or clicked_row >= self.height):
+                            continue
 
                         def handle_selection(event):
                             selected_item = dropdown.get()
@@ -146,11 +154,10 @@ class HexWorld(World):
     def FindNeighbours(self, org, x, y):
         for i in range(-1, 2):
             for j in range(-1, 2):
-                if i == 0 and j == 0:
+                if (i == 0 and j == 0) or (i == -1 and j == -1) or (i == 1 and j == 1):
                     continue
                 if org.y + i >= 0 and org.y + i < self.height and org.x + j >= 0 and org.x + j < self.width and self.GetPoint(
-                        org.x + j, org.y + i) is not None and isinstance(
-                    self.GetPoint(org.x + j, org.y + i), Animal):
+                        org.x + j, org.y + i) is not None and isinstance(self.GetPoint(org.x + j, org.y + i), Animal):
                     x.append(org.x + j)
                     y.append(org.y + i)
 
@@ -169,3 +176,9 @@ class HexWorld(World):
         if (x_coo - 1 >= 0 and self.GetPoint(x_coo - 1, y_coo) == None):
             x.append(x_coo - 1)
             y.append(y_coo)
+        if (x_coo - 1 >= 0 and y_coo + 1 < self.height and self.GetPoint(x_coo-1, y_coo + 1) == None):
+            x.append(x_coo - 1)
+            y.append(y_coo + 1)
+        if (x_coo + 1 < self.width and y_coo - 1 >= 0 and self.GetPoint(x_coo + 1, y_coo - 1) == None):
+            x.append(x_coo+1)
+            y.append(y_coo-1)
