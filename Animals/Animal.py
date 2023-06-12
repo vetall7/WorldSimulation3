@@ -11,8 +11,8 @@ class Animal(Organism):
         self._world = world
         self._sign = sign
         self._name = name
-        self.power = power
-        self.initiative = initiative
+        self._power = power
+        self._initiative = initiative
     def IsRunAway(self):
         return False
 
@@ -80,7 +80,7 @@ class Animal(Organism):
         if (victim.age == 0):
             return
         if (victim.sign == self._sign):
-            temp = self.__NewOrganism(victim)
+            temp = self.NewOrganism(victim)
             if temp != None:
                 self.world.AddOrganism(temp)
                 self.world.AddComment(temp.name + "was born")
@@ -100,43 +100,6 @@ class Animal(Organism):
             self.world.AddComment(victim.name + " killed " + self.name)
             self.world.SetPoint(self.x_priv, self.y_priv, None)
             self.world.DeleteOrg(self)
-
-    def __NewOrganism(self, victim):
-        from Animals.Wolf import Wolf
-        from Animals.Fox import Fox
-        from Animals.Turtle import Turtle
-        from Animals.Antelope import Antelope
-        from Animals.Sheep import Sheep
-        from Animals.cybersheep import cybersheep
-        x = []
-        y = []
-        self.world.FindPoints(self, x, y)
-        self.world.FindPoints(victim, x, y)
-        if (len(x) == 0):
-            return None
-        point = random.randint(0, len(x)-1)
-        x_temp = x[point]
-        y_temp = y[point]
-
-        if (isinstance(self, Wolf)):
-            w = Wolf(x_temp, y_temp, self.world)
-            return w
-        if (isinstance(self, Sheep)):
-            s = Sheep(x_temp, y_temp, self.world)
-            return s
-        if (isinstance(self, Fox)):
-            f = Fox(x_temp, y_temp, self.world)
-            return f
-        if (isinstance(self, Turtle)):
-            t = Turtle(x_temp, y_temp, self.world)
-            return t
-        if (isinstance(self, Antelope)):
-            a = Antelope(x_temp, y_temp, self.world)
-            return a
-        if (isinstance(self, cybersheep)):
-            a = cybersheep(x_temp, y_temp, self.world)
-            return a
-        return None
 
     def isKilledByHogweed(self):
         return True

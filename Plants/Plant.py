@@ -9,8 +9,8 @@ class Plant(Organism):
         self._world = world
         self._sign = sign
         self._name = name
-        self.power = power
-        self.initiative = initiative
+        self._power = power
+        self._initiative = initiative
 
     def action(self, range):
         rand_num = random.randint(0,20)

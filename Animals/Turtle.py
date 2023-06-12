@@ -18,3 +18,15 @@ class Turtle(Animal):
         rand_num = random.randint(0,4)
         if (rand_num == 0):
             super().action(range)
+    def NewOrganism(self, victim):
+        x = []
+        y = []
+        self.world.FindPoints(self, x, y)
+        self.world.FindPoints(victim, x, y)
+        if (len(x) == 0):
+            return None
+        point = random.randint(0, len(x) - 1)
+        x_temp = x[point]
+        y_temp = y[point]
+        a = Turtle(x_temp, y_temp, self.world)
+        return a

@@ -1,6 +1,6 @@
 from Animals.Animal import Animal
 from Plants.SosmowskiHogweed import SosmowskiHogweed
-
+import random
 
 class cybersheep(Animal):
     def __init__(self, x, y, world):
@@ -69,3 +69,16 @@ class cybersheep(Animal):
 
     def isKilledByHogweed(self):
         return False
+
+    def NewOrganism(self, victim):
+        x = []
+        y = []
+        self.world.FindPoints(self, x, y)
+        self.world.FindPoints(victim, x, y)
+        if (len(x) == 0):
+            return None
+        point = random.randint(0, len(x) - 1)
+        x_temp = x[point]
+        y_temp = y[point]
+        a = cybersheep(x_temp, y_temp, self.world)
+        return a

@@ -30,3 +30,16 @@ class Antelope(Animal):
             self.world.AddComment("Antelope run away [" + str(self.x) + ";" + str(self.y) + "]" )
             return True
         return False
+
+    def NewOrganism(self, victim):
+        x = []
+        y = []
+        self.world.FindPoints(self, x, y)
+        self.world.FindPoints(victim, x, y)
+        if (len(x) == 0):
+            return None
+        point = random.randint(0, len(x) - 1)
+        x_temp = x[point]
+        y_temp = y[point]
+        a = Antelope(x_temp, y_temp, self.world)
+        return a

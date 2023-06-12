@@ -74,3 +74,15 @@ class Fox(Animal):
             self.world.AddComment(
                 self.name + " moved from [" + str(self.x_priv) + ";" + str(self.y_priv) + "]" + " to [" + str(
                     x) + ";" + str(y) + "]")
+    def NewOrganism(self, victim):
+        x = []
+        y = []
+        self.world.FindPoints(self, x, y)
+        self.world.FindPoints(victim, x, y)
+        if (len(x) == 0):
+            return None
+        point = random.randint(0, len(x) - 1)
+        x_temp = x[point]
+        y_temp = y[point]
+        a = Fox(x_temp, y_temp, self.world)
+        return a

@@ -20,7 +20,7 @@ def choose_world(width, height):
         world.DrawWorld(generate)
 
     window2 = tk.Tk()
-    window2.title("Диалоговое окно")
+    window2.title("Vitalii Shapovalov 196633")
     window2.geometry("300x250")
     window2.configure(bg="darkblue")
 
@@ -54,7 +54,7 @@ def new_world():
     window.destroy()
 
     root = tk.Tk()
-    root.title("Диалоговое окно")
+    root.title("Vitalii Shapovalov 196633")
     root.geometry("400x250")
     root.configure(bg="darkblue")
 
@@ -89,7 +89,7 @@ def saved_world():
 
 
 window = tk.Tk()
-window.title("Диалоговое окно")
+window.title("Vitalii Shapovalov 196633")
 window.geometry("300x250")
 window.configure(bg="darkblue")
 

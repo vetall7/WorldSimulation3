@@ -97,3 +97,5 @@ class Human(Animal):
             self.world.AddComment(
                 self.name + " moved from [" + str(self.x_priv) + ";" + str(self.y_priv) + "]" + " to [" + str(
                     x) + ";" + str(y) + "]")
+    def NewOrganism(self, victim):
+        return None

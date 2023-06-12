@@ -30,7 +30,7 @@ class HexWorld(World):
         window_width = BOARD_SIZE[0] * CELL_SIZE + self.width * CELL_SIZE / 2
         window_height = BOARD_SIZE[1] * CELL_SIZE + 100  # Increased height for the text area
         screen = pygame.display.set_mode((window_width, window_height))
-        pygame.display.set_caption("Шахматная доска")
+        pygame.display.set_caption("WORLD SIMULATION")
 
 
         board_surface = pygame.Surface((window_width, window_height - 100))
@@ -121,7 +121,7 @@ class HexWorld(World):
                         clicked_row = (mouse_pos[1] // (CELL_SIZE - CELL_SIZE//4))
                         clicked_col = (mouse_pos[0] - (clicked_row * (CELL_SIZE//2))) // CELL_SIZE
 
-                        if (clicked_col < 0 or clicked_col >= self.width or clicked_row < 0 or clicked_row >= self.height):
+                        if (clicked_col < 0 or clicked_col >= self.width or clicked_row < 0 or clicked_row >= self.height or self._board[clicked_row][clicked_col] != None):
                             continue
 
                         def handle_selection(event):
@@ -133,7 +133,7 @@ class HexWorld(World):
                                 self.DrawWorld(generate)
 
                         window = tk.Tk()
-                        window.title("Выпадающий список")
+                        window.title("List")
 
                         dropdown = ttk.Combobox(window,
                                                 values=["Antelope", "Fox", "Wolf", "Turtle", "Sheep", "Belladonna",
